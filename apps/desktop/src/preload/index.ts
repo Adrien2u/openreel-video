@@ -225,6 +225,7 @@ contextBridge.exposeInMainWorld("openreel", {
     nativeProbe: (args: unknown) => ipcRenderer.invoke(CHANNELS.mediaNativeProbe, args),
     nativeFrame: (args: unknown) => ipcRenderer.invoke(CHANNELS.mediaNativeFrame, args),
     nativeStats: () => ipcRenderer.invoke(CHANNELS.mediaNativeStats, undefined),
+    readLocal: (p: string) => ipcRenderer.invoke(CHANNELS.mediaReadLocal, { path: p }),
   },
   rigging: {
     probeBackend: () => ipcRenderer.invoke(CHANNELS.riggingProbeBackend, undefined),

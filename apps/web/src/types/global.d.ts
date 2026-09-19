@@ -978,6 +978,10 @@ declare global {
         nativeProbe(args: { path: string }): Promise<OpenReelNativeSourceProbe | null>;
         nativeFrame(args: { path: string; time: number; width?: number; quality?: "preview" | "full"; bitDepth?: 8 | 16 }): Promise<OpenReelNativeFrame | null>;
         nativeStats(): Promise<OpenReelNativeDecodeStats>;
+        /** Read a local media file after main-process path and size checks. */
+        readLocal(path: string): Promise<
+          { ok: true; name: string; bytes: ArrayBuffer } | { ok: false; error: string }
+        >;
       };
       rigging?: {
         probeBackend(): Promise<OpenReelRiggingBackendProbe>;

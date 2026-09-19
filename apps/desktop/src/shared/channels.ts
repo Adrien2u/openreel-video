@@ -79,6 +79,7 @@ export const CHANNELS = {
   mediaBrowserProbeClip: "openreel:mediaBrowser:probeClip",
   mediaBrowserReadXmp: "openreel:mediaBrowser:readXmp",
   mediaBrowserWriteSidecar: "openreel:mediaBrowser:writeSidecar",
+  mediaReadLocal: "openreel:media:readLocal",
   riggingProbeBackend: "openreel:rigging:probeBackend",
   riggingRigHumanoidModel: "openreel:rigging:rigHumanoidModel",
   cloudFetch: "openreel:cloud:fetch",
