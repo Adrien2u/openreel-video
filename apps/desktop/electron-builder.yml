@@ -1,5 +1,10 @@
-appId: video.openreel.desktop
-productName: OpenReel
+# LOCAL DEV BUILD (branch dev/openreel-dev, never upstreamed). Its own appId,
+# name and userData so it installs beside the official OpenReel without sharing
+# projects, settings or its auto-update feed.
+appId: video.openreel.desktop.dev
+productName: OpenReel Dev
+extraMetadata:
+  name: "@openreel/desktop-dev"
 # Predictable, space-free, arch-suffixed names → clean R2 URLs + a simple
 # manifest (e.g. OpenReel-1.2.3-arm64.dmg, OpenReel-1.2.3-x64.exe).
 artifactName: ${productName}-${version}-${arch}.${ext}
@@ -13,10 +18,8 @@ directories:
 # Update feed for electron-updater. Builds embed app-update.yml pointing at the
 # R2-backed download subdomain and generate latest*.yml + blockmaps; the release
 # CI uploads everything to R2 (the generic provider does not upload itself).
-publish:
-  provider: generic
-  url: https://dl.openreel.video
-  channel: latest
+# No update feed: an upstream update would replace these patches.
+publish: null
 files:
   - dist/**/*
   - "!**/*.map"
