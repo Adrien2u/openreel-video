@@ -53,7 +53,21 @@ describe("import_media_from_path", () => {
     },
   );
 
-  it.each(["C:\\media\\a.MP4", "D:/footage/b.wav", "/Users/u/c.png", "\\\\nas\\share\\d.mov"])(
+  it.each([
+    "\\\\attacker.example.com\\share\\bait.mp4",
+    "\\\\?\\C:\\media\\a.mp4",
+    "\\\\.\\PhysicalDrive0.mp4",
+    "C:\\Users\\u\\secrets.txt:x.mp4",
+    "C:\\media\\secret.txt .mp4.",
+  ])("rejects the network, device, stream or trailing-dot path %j", async (path) => {
+    const calls: Array<{ path: string }> = [];
+    const res = await executeTool("import_media_from_path", { path }, hostWithPathImport(calls));
+    expect(res.ok).toBe(false);
+    expect(res.error?.code).toBe("INVALID_PARAMS");
+    expect(calls).toHaveLength(0);
+  });
+
+  it.each(["C:\\media\\a.MP4", "D:/footage/b.wav", "/Users/u/c.png"])(
     "imports the absolute media path %j",
     async (path) => {
       const calls: Array<{ path: string; name?: string }> = [];

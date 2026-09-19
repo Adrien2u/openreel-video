@@ -330,8 +330,13 @@ import {
   type ClipFilter,
 } from "./serialize";
 
-/** Absolute on Windows (`C:\`, `C:/`, `\\server`) or POSIX (`/`). */
-const ABSOLUTE_PATH = /^(?:[A-Za-z]:[\\/]|\\\\|\/)/;
+/**
+ * A drive-absolute Windows path (`C:\`, `C:/`) or an absolute POSIX path. UNC
+ * and device paths (`\\host`, `\\?\`, `\\.\`) are refused outright: a UNC read
+ * authenticates to that host and leaks the user's NTLM hash. The desktop main
+ * process repeats these checks and owns the real boundary.
+ */
+const ABSOLUTE_PATH = /^(?:[A-Za-z]:[\\/]|\/(?!\/))/;
 
 /** What import_media_from_path will read. Anything else is refused unread. */
 const LOCAL_MEDIA_EXTENSIONS = new Set([
@@ -15547,7 +15552,12 @@ const TOOLS: RegisteredTool[] = [
       }
       const path = typeof args.path === "string" ? args.path : "";
       if (!ABSOLUTE_PATH.test(path)) {
-        return fail(`path must be absolute (got "${path}")`, "INVALID_PARAMS");
+        return fail(`path must be an absolute local path, not a network or device path (got "${path}")`, "INVALID_PARAMS");
+      }
+      // A second colon names an NTFS alternate data stream: secret.txt:x.mp4
+      // would read a hidden stream of secret.txt while looking like an .mp4.
+      if (path.indexOf(":", 2) !== -1) {
+        return fail(`alternate data streams are not allowed (got "${path}")`, "INVALID_PARAMS");
       }
       const ext = path.slice(path.lastIndexOf(".") + 1).toLowerCase();
       if (!LOCAL_MEDIA_EXTENSIONS.has(ext) || !/[\\/][^\\/]+\.[^\\/.]+$/.test(path)) {

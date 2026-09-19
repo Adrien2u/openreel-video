@@ -270,15 +270,17 @@ export class LiveEditorHost implements EditingHost {
     options?: { name?: string },
   ): Promise<ImportedMediaRef> {
     this.requireOpenProject();
-    const readBytes = window.openreel?.fs?.readFileBytes;
-    if (typeof readBytes !== "function") {
+    // The main process owns the path and size checks; the raw readFileBytes
+    // bridge has none, so it is deliberately not used here.
+    const readLocal = window.openreel?.media?.readLocal;
+    if (typeof readLocal !== "function") {
       throw new Error("Importing from a local path is only available in the desktop app");
     }
-    const base = path.split(/[\\/]/).pop() ?? path;
-    const ext = base.slice(base.lastIndexOf(".") + 1).toLowerCase();
+    const res = await readLocal(path);
+    if (!res.ok) throw new Error(res.error);
+    const ext = res.name.slice(res.name.lastIndexOf(".") + 1).toLowerCase();
     const mime = MIME_BY_EXT[ext] ?? "application/octet-stream";
-    const body = await readBytes(path);
-    return this.importFile(new File([body], options?.name ?? base, { type: mime }));
+    return this.importFile(new File([res.bytes], options?.name ?? res.name, { type: mime }));
   }
 
   private async importFile(file: File): Promise<ImportedMediaRef> {
