@@ -1,4 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { autoUpdater } from "electron-updater";
 import { CHANNELS } from "../shared/ipc-contract";
 
@@ -35,6 +37,13 @@ function runCheckWhenLoaded(win: BrowserWindow, run: () => void): void {
 // so updates never bypass the save prompt. No-op in dev (no published feed).
 export function initAutoUpdater(): void {
   if (!app.isPackaged) return;
+
+  // A build made without a publish provider - `electron-builder --dir`, and
+  // this fork, which sets `publish: null` so an upstream release cannot
+  // replace its patches - ships no app-update.yml. electron-updater then
+  // throws ENOENT on first check and prints a stack the user cannot act on.
+  // No feed, no updater.
+  if (!existsSync(join(process.resourcesPath, "app-update.yml"))) return;
 
   // Notify → (user-consented) download → install on quit. The download is not
   // automatic; the renderer triggers it after telling the user an update
