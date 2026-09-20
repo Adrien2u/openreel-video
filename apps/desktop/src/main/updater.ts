@@ -1,4 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { AppUpdater } from "electron-updater";
 import { CHANNELS } from "../shared/ipc-contract";
 
@@ -41,6 +43,12 @@ let updaterRequested = false;
 
 export function initAutoUpdater(): void {
   if (!app.isPackaged) return;
+  // A build made without a publish provider - `electron-builder --dir`, and
+  // this fork, which sets `publish: null` so an upstream release cannot
+  // replace its patches - ships no app-update.yml. electron-updater then
+  // throws ENOENT on first check and prints a stack the user cannot act on.
+  // No feed, no updater.
+  if (!existsSync(join(process.resourcesPath, "app-update.yml"))) return;
   // Called once per window shown (macOS re-creates a window on dock activate): ipcMain.handle throws
   // on a second registration and the listeners would double, so wire exactly once.
   if (updaterRequested) return;
@@ -54,7 +62,6 @@ export function initAutoUpdater(): void {
 }
 
 function wireAutoUpdater(autoUpdater: AppUpdater): void {
-
   // Notify → (user-consented) download → install on quit. The download is not
   // automatic; the renderer triggers it after telling the user an update
   // exists. The downloaded update installs on the next quit, which runs the
