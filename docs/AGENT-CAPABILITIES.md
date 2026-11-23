@@ -2,7 +2,7 @@
 
 # OpenReel Agent — Capability Reference
 
-The agent exposes **494 tools** spanning read/observe, project, track, clip, transform, effect, color, speed, audio, subtitle, keyframe, transition, marker, text and graphics domains — plus `execute_action` and `batch_actions` escape hatches for any capability without a dedicated tool.
+The agent exposes **495 tools** spanning read/observe, project, track, clip, transform, effect, color, speed, audio, subtitle, keyframe, transition, marker, text and graphics domains — plus `execute_action` and `batch_actions` escape hatches for any capability without a dedicated tool.
 
 ## Tools
 
@@ -13,6 +13,7 @@ The agent exposes **494 tools** spanning read/observe, project, track, clip, tra
 - **list_tracks** (read-only) — All timeline tracks.
 - **list_clips** (read-only) — Compact clip list. Optional filters: trackIndex, fromSec, toSec; paginate huge timelines with offset/limit.
 - **get_clip** (read-only) — Full detail for one clip by id.
+- **list_overlays** (read-only) — Text clips and subtitles with start/end seconds. These live outside the timeline tracks, so list_clips does not include them.
 - **get_capabilities** (read-only) — Valid enums + parameter ranges.
 - **get_creation_capabilities** (read-only) — Agent-native creation vocabulary, supported editable 3D object/material/environment kinds, and the preferred create/sync/preview/edit workflow.
 - **get_creation_history** (read-only) — List recent persisted creation operations (asset/scene/camera/scene-object/animation upserts and removals) with their source, label, and target ids — for agent review panels, audit, and undo planning. Optional sceneId filter and limit (default 50).

@@ -1,12 +1,13 @@
 {
- "count": 494,
- "total": "243b90c72e976c818592cb1b1b5fcbff3beec5935d6a230cd77d564604adab44",
+ "count": 495,
+ "total": "42248bec060eee0eb3dfcf9039006065a1b3558379c49efd2cefa0c4cb65dbb7",
  "tools": [
   "get_editor_state:4bec3e3c3b0bfb2c",
   "list_media:3109aee5b9063093",
   "list_tracks:54dcaf2fe78cb90f",
   "list_clips:ea297ca5f95cdf24",
   "get_clip:6b8a9ebaf7e4bce4",
+  "list_overlays:d0a02f5df1563652",
   "get_capabilities:8d883f66915d9fb6",
   "get_creation_capabilities:1d06d04fe399993b",
   "get_creation_history:092bb318e8390fb5",

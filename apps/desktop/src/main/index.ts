@@ -88,7 +88,6 @@ import { registerMediaBrowserIpc } from "./media-browser/ipc";
 import { registerWatchFoldersIpc, startWatchFolders, stopWatchFolders } from "./watch/ipc";
 import { registerRenderCacheIpc, restoreBundledRenderCache } from "./render-cache/ipc";
 import { disposePlughost, registerPlughostIpc } from "./ipc/plughost";
-import { readLocalMedia } from "./ipc/local-media";
 import { probeRiggingBackend, rigHumanoidModel } from "./sidecar/rigging-backend";
 import { disposeAuroraClient } from "./aurora/client";
 import {
@@ -105,7 +104,6 @@ import {
   fetchUrlArgsSchema,
   nativeProbeArgsSchema,
   nativeFrameArgsSchema,
-  readLocalMediaArgsSchema,
   auroraPreviewSessionCancelArgsSchema,
   auroraPreviewSessionStartArgsSchema,
   auroraPreviewSessionStartResultSchema,
@@ -375,7 +373,6 @@ app.whenReady().then(() => {
     nativeDecodeService().getFrame(p, time, { width, quality, bitDepth }),
   );
   handle(CHANNELS.mediaNativeStats, z.undefined(), () => nativeDecodeService().getStats());
-  handle(CHANNELS.mediaReadLocal, readLocalMediaArgsSchema, (args) => readLocalMedia(args));
   handle(CHANNELS.auroraRenderPreview, auroraRenderPreviewArgsSchema, async (args) =>
     auroraRenderPreviewResultSchema.parse(
       await renderAuroraPreview(args as AuroraRenderPreviewArgs),
